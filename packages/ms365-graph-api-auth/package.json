@@ -34,5 +34,8 @@
   "devDependencies": {
     "@types/node": "^18.14.1",
     "dotenv": "^16.0.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
