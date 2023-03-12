@@ -1,6 +1,6 @@
 {
   "name": "@colorfullife/ms365-graph-api-auth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Get the authenticated Azure app to CRUD Sharepoint by Microsoft Graph API",
   "module": "dist/esm/index.js",
   "homepage": "https://github.com/happyeric77/colorfullife.git",
