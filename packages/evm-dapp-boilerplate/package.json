@@ -1,6 +1,10 @@
 {
   "name": "@colorfullife/evm-dapp-boilerplate",
   "homepage": "https://github.com/happyeric77/colorfullife.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/happyeric77/colorfullife.git"
+  },
   "version": "0.0.0",
   "private": true,
   "scripts": {
