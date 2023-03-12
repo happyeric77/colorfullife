@@ -6,7 +6,10 @@
   ],
   "scripts": {
     "build": "npx lerna run build",
-    "version:major": "npx lerna version major"
+    "version:major": "npx lerna version major",
+    "version:minor": "npx lerna version minor",
+    "version:patch": "npx lerna version patch",
+    "publish:from-git": "npx lerna publish from-git"
   },
   "devDependencies": {
     "lerna": "^6.5.1"
