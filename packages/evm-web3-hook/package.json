@@ -1,6 +1,6 @@
 {
   "name": "@colorfullife/evm-web3-hook",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "dist/cjs/index.js",
   "description": "EVM Web3 hook",
   "homepage": "https://github.com/happyeric77/colorfullife.git",
