@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/happyeric77/colorfullife.git"
   },
-  "version": "1.0.3",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-    "@colorfullife/evm-web3-hook": "^1.0.3",
+    "@colorfullife/evm-web3-hook": "^1.1.0",
     "@metamask/detect-provider": "^2.0.0",
     "@types/node": "^17.0.0",
     "antd": "^4.17.2",
