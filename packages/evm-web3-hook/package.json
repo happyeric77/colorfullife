@@ -9,12 +9,12 @@
     "url": "https://github.com/happyeric77/colorfullife.git"
   },
   "exports": {
-    "import": "./dist/esm/index.js",
-    "require": "./dist/cjs/index.js"
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.js"
   },
-  "types": "./dist/cjs/index.d.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist/ && yarn build:esm && yarn build:cjs",
+    "build": "rm -rf dist/ && tsup lib/index.tsx --format cjs,esm --dts",
     "build:esm": "tsc",
     "build:cjs": "tsc -p ./tsconfig.cjs.json"
   },
@@ -34,6 +34,7 @@
   "devDependencies": {
     "@types/react": "18.0.1",
     "@types/web3": "^1.2.2",
+    "tsup": "^6.6.3",
     "typescript": "4.5.5"
   },
   "license": "MIT",
