@@ -24,7 +24,8 @@
     "url": "git+https://github.com/happyeric77/colorfullife.git"
   },
   "scripts": {
-    "build": "rm -rf dist/ &&  tsup lib/index.ts --format cjs,esm --dts"
+    "build": "rm -rf dist/ &&  tsup lib/index.ts --format cjs,esm --dts",
+    "test": "ts-node __test__/test.ts"
   },
   "bugs": {
     "url": "https://github.com/happyeric77/colorfullife/issues"
