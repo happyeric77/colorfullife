@@ -11,7 +11,7 @@
     "version:minor": "npx lerna version minor",
     "version:patch": "npx lerna version patch",
     "publish:from-git": "npx lerna --no-private publish from-git",
-    "publish:from-package": "npx lerna --no-private --access public publish from-package"
+    "publish:from-package": "npx lerna --no-private publish from-package"
   },
   "devDependencies": {
     "lerna": "^6.5.1"

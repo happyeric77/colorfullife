@@ -33,6 +33,8 @@
   "devDependencies": {
     "tsup": "^6.6.3"
   },
-  "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
   "gitHead": "fe901d9c888a4a22cf2f0480a636f2fa1d3f954a"
 }
