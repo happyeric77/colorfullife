@@ -1,6 +1,7 @@
 {
   "name": "root",
   "private": true,
+  "access": "public",
   "workspaces": [
     "packages/*"
   ],
