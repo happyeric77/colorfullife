@@ -1,0 +1,37 @@
+{
+  "name": "@colorfullife/typesafe-emitter",
+  "version": "1.2.2",
+  "description": "EventEmitter with fully typed feature",
+  "keywords": [
+    "typescript",
+    "node"
+  ],
+  "author": "happyeric77 <happyeric77@gmail.com>",
+  "homepage": "https://docs.colorfullife.ml/",
+  "license": "MIT",
+  "main": "lib/index.ts",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/happyeric77/colorfullife.git"
+  },
+  "scripts": {
+    "build": "rm -rf dist/ &&  tsup lib/index.ts --format cjs,esm --dts",
+    "test": "ts-node __test__/test.ts"
+  },
+  "bugs": {
+    "url": "https://github.com/happyeric77/colorfullife/issues"
+  },
+  "devDependencies": {
+    "tsup": "^6.6.3"
+  },
+  "gitHead": "927bd04861039e532295dd76a6d6f3538fd94572"
+}
