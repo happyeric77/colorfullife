@@ -1,6 +1,7 @@
 import express from "express";
 import https from "https";
 import { getAccessToken, GraphApiQuery } from "@colorfullife/ms365-graph-api-auth";
+require("dotenv").config();
 
 const app = express();
 
