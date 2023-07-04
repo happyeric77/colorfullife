@@ -1,6 +1,6 @@
 {
   "name": "vue-card-dummy",
-  "version": "0.0.0",
+  "version": "2.1.0",
   "exports": {
     ".": {
       "import": "./dist/vue-card-dummy.mjs",
