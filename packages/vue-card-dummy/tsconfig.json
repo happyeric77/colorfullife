@@ -1,11 +1,8 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.app.json"
-    }
-  ]
+  "include": ["env.d.ts", "lib/**/*", "lib/**/*.vue"],
+  "exclude": ["lib/**/__tests__/*", "node_modules"],
+  "compilerOptions": {
+    "composite": true,
+    "baseUrl": "."
+  }
 }

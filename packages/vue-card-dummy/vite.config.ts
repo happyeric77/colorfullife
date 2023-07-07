@@ -1,15 +1,16 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import dts from "vite-plugin-dts";
 
 export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: resolve(__dirname, "lib/index.ts"),
-      name: "vue-card-dummy",
+      name: "VueCardDummy",
       // the proper extensions will be added
-      fileName: "vue-card-dummy",
+      fileName: "index",
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
@@ -24,5 +25,11 @@ export default defineConfig({
       },
     },
   },
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    // Generate `*.d.ts` files
+    dts({
+      insertTypesEntry: true,
+    }),
+  ],
 });

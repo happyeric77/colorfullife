@@ -4,6 +4,13 @@
   </div>
 </template>
 
+<script setup lang="ts">
+export type DummyCardType = {
+  title: string;
+  description: string;
+};
+</script>
+
 <style scoped>
 .card {
   margin-bottom: 1.5rem;
