@@ -2,12 +2,17 @@ import { FC, useEffect, useState } from "react";
 // import { useWeb3 } from "../hooks/useWeb3";
 import ERC20Json from "../utils/contracts/ERC20.json";
 import { ERC20 } from "../utils/contractTypes/ERC20";
+// @ts-ignore
 import { AbiItem } from "web3-utils";
 import { EAlertStatus, useNotify } from "../hooks/useNotify";
 import { TransactionReceipt } from "web3-core";
 import { useLoading } from "../hooks/useLoading";
 import { Button, Input, Statistic } from "antd";
-import { CheckCircleFilled, CodeFilled, DollarCircleFilled } from "@ant-design/icons";
+import {
+  CheckCircleFilled,
+  CodeFilled,
+  DollarCircleFilled,
+} from "@ant-design/icons";
 import style from "../styles/Erc20approve.module.sass";
 import { useWeb3 } from "@colorfullife/evm-web3-hook";
 
@@ -32,7 +37,10 @@ const ApproveERC20: FC = () => {
 
   const handleErc20AddrChange = async (erc20Addr: string) => {
     if (web3Data.web3.utils.isAddress(erc20Addr)) {
-      const erc20 = new web3Data.web3.eth.Contract(ERC20Json.abi as AbiItem[], erc20Addr) as unknown as ERC20;
+      const erc20 = new web3Data.web3.eth.Contract(
+        ERC20Json.abi as AbiItem[],
+        erc20Addr
+      ) as unknown as ERC20;
       return setErc20(erc20);
     }
     setNotify({ title: "Token Not Exist", status: EAlertStatus.warning });
@@ -41,14 +49,21 @@ const ApproveERC20: FC = () => {
     try {
       const code = await web3Data.web3.eth.getCode(spender);
       if (code !== "0x") {
-        const allowance = await erc20?.methods.allowance(web3Data.accounts[0], spender).call();
-        const decimals = (await erc20?.methods.decimals().call()) as unknown as number;
+        const allowance = await erc20?.methods
+          .allowance(web3Data.accounts[0], spender)
+          .call();
+        const decimals = (await erc20?.methods
+          .decimals()
+          .call()) as unknown as number;
         console.log({ allowance, acc: web3Data.web3.eth });
         setAllowance((allowance as unknown as number) / 10 ** decimals);
         setSpender(spender);
         return;
       }
-      setNotify({ status: EAlertStatus.warning, title: "Spender is not a smart contract" });
+      setNotify({
+        status: EAlertStatus.warning,
+        title: "Spender is not a smart contract",
+      });
     } catch (e) {
       setNotify({ status: EAlertStatus.error, title: "Not a valid address" });
     }
@@ -56,14 +71,20 @@ const ApproveERC20: FC = () => {
 
   const approveERC20 = async (spender: string) => {
     setLoading({ isShown: true });
-    const decimals = (await erc20?.methods.decimals().call()) as unknown as number;
+    const decimals = (await erc20?.methods
+      .decimals()
+      .call()) as unknown as number;
 
     if (!decimals || !erc20) return;
     let result: TransactionReceipt | null = null;
     try {
       const amount = approveAmount * 10 ** decimals;
-      result = await erc20.methods.approve(spender, amount).send({ from: web3Data.accounts[0] });
-      const allowance = await erc20?.methods.allowance(web3Data.accounts[0], spender).call();
+      result = await erc20.methods
+        .approve(spender, amount)
+        .send({ from: web3Data.accounts[0] });
+      const allowance = await erc20?.methods
+        .allowance(web3Data.accounts[0], spender)
+        .call();
       setAllowance((allowance as unknown as number) / 10 ** decimals);
       setNotify({
         status: result.status ? EAlertStatus.success : EAlertStatus.error,
