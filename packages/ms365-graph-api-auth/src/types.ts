@@ -1,9 +1,9 @@
-export interface ISites {
+export type ISites = {
   "@odata.context": string;
   value: ISite[];
-}
+};
 
-export interface ISite {
+export type ISite = {
   createdDateTime: string;
   id: string;
   lastModifiedDateTime: string;
@@ -12,16 +12,16 @@ export interface ISite {
   displayName: string;
   root: Object;
   siteCollection: [Object];
-}
-export interface IListItems {
+};
+export type IListItems = {
   "@odata.context": string;
   value: IListItem[];
-}
+};
 
-export interface IListItemField {
+export type IListItemField = {
   [key: string]: any;
-}
-export interface IListItem {
+};
+export type IListItem = {
   "@odata.etag": string;
   createdDateTime: string;
   eTag: string;
@@ -33,14 +33,14 @@ export interface IListItem {
   parentReference: [Object];
   contentType: [Object];
   fields?: IListItemField; // ONLY SHOWS WHEN QUERY SINGLE ITEM BY ID
-}
+};
 
-export interface ILists {
+export type ILists = {
   "@odata.context": string;
   value: IList[];
-}
+};
 
-export interface IList {
+export type IList = {
   "@odata.etag": string;
   createdDateTime: string;
   description: string;
@@ -53,14 +53,14 @@ export interface IList {
   createdBy: [Object];
   parentReference: [Object];
   list: [Object];
-}
+};
 
-export interface IDrives {
+export type IDrives = {
   "@odata.context": string;
   value: IDrive[];
-}
+};
 
-export interface IDrive {
+export type IDrive = {
   "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity";
   createdDateTime: string;
   description: string;
@@ -73,14 +73,14 @@ export interface IDrive {
   lastModifiedBy: [Object];
   owner: [Object];
   quota: [Object];
-}
+};
 
-export interface IDriveItems {
+export type IDriveItems = {
   "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#sites('51tvnm.sharepoint.com%2Cbdaafbd4-08f0-421c-877e-4b87dc459784%2C22c9a737-a9b6-4279-885e-2231d39a0627')/drives('b%211PuqvfAIHEKHfkuH3EWXhDenySK2qXlCiF4iMdOaBid8qWThmL8QQaczJWXd_EOO')/root/children";
   value: IDriveItem[];
-}
+};
 
-export interface IDriveItem {
+export type IDriveItem = {
   "@microsoft.graph.downloadUrl": string;
   createdDateTime: string;
   eTag: string;
@@ -97,4 +97,4 @@ export interface IDriveItem {
   fileSystemInfo: [Object];
   image: {};
   shared: [Object];
-}
+};
