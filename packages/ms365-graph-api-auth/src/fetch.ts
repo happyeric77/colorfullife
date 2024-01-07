@@ -10,23 +10,29 @@ import {
   ISites,
 } from "./types";
 
-type CallConfig = {
-  endpoint: string;
-  accessToken: string;
-  method?: "get" | "post" | "patch" | "delete" | "put";
-  params?: { [key: string]: string };
-  data?: { [key: string]: any }; // TODO: type
-  headers?: { [key: string]: string };
-};
+import { getRequestHandler } from "../utils/requestHandler";
+
 class GraphApiQuery {
   constructor(private accessToken: string) {}
 
+  private baseApiUrl = "https://graph.microsoft.com/";
+
+  private get baseParams() {
+    return {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    };
+  }
+
   async getSites(siteName?: string): Promise<ISites> {
-    let sites = (await this.callApi({
-      endpoint: `v1.0/sites`,
-      accessToken: this.accessToken,
-      // params: siteName ? { search: siteName } : undefined,
-    })) as ISites;
+    const getSharePointSites = getRequestHandler<ISites>((params) =>
+      axios.get(this.baseApiUrl + "v1.0/sites", params)
+    );
+    const res = await getSharePointSites(this.baseParams);
+
+    if (!res.success) throw Error("ERROR: getSites - " + res.error.message);
+    let sites = res.data;
     if (siteName)
       sites = {
         ...sites,
@@ -34,11 +40,17 @@ class GraphApiQuery {
       };
     return sites;
   }
+
   async getListsInSite(siteId: string, listName?: string): Promise<ILists> {
-    let lists = (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/lists`,
-      accessToken: this.accessToken,
-    })) as ILists;
+    const getListsInSite = getRequestHandler<ILists>((params) =>
+      axios.get(this.baseApiUrl + `v1.0/sites/${siteId}/lists`, params)
+    );
+
+    const res = await getListsInSite(this.baseParams);
+
+    if (!res.success)
+      throw Error("ERROR: getListsInSite - " + res.error.message);
+    let lists = res.data;
     if (listName)
       lists = {
         ...lists,
@@ -46,67 +58,114 @@ class GraphApiQuery {
       };
     return lists;
   }
+
   async getItemsInList(siteId: string, listId: string): Promise<IListItems> {
-    return (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/lists/${listId}/items?expand=fields`, // OPTION: ?expand=fields(select=Column1,Column2) https://learn.microsoft.com/ja-jp/graph/api/listitem-list?view=graph-rest-1.0&tabs=http
-      accessToken: this.accessToken,
-    })) as IListItems;
+    const getItemsInList = getRequestHandler<IListItems>((params) =>
+      axios.get(
+        this.baseApiUrl +
+          `v1.0/sites/${siteId}/lists/${listId}/items?expand=fields`,
+        params
+      )
+    );
+    const res = await getItemsInList(this.baseParams);
+    if (!res.success)
+      throw Error("ERROR: getItemsInList - " + res.error.message);
+
+    return res.data;
   }
+
+  // TODO: Broken - https://stackoverflow.com/questions/50851894/how-to-create-sharepoint-list-item-with-microsoft-graph-api
   async postCreateListItem(
     siteId: string,
     listId: string,
-    fields: { [key: string]: string }
+    fields: { [key: string]: any }
   ): Promise<IListItemField> {
-    return (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/lists/${listId}/items`,
-      accessToken: this.accessToken,
-      method: "post",
+    const postCreateListItem = getRequestHandler<IListItemField>((params) =>
+      axios.post(
+        this.baseApiUrl + `v1.0/sites/${siteId}/lists/${listId}/items`,
+        { fields },
+        params
+      )
+    );
+
+    const params: AxiosRequestConfig = {
+      ...this.baseParams,
       headers: {
+        ...this.baseParams.headers,
         "Content-Type": "application/json",
       },
-      data: {
-        fields: fields,
-      },
-    })) as IListItemField;
+    };
+
+    const res = await postCreateListItem(params);
+
+    if (!res.success)
+      throw Error("ERROR: postCreateListItem - " + res.error.message);
+
+    return res.data;
   }
+
+  // TODO: Broken - Maybe caused by request data format update TBD
   async patchUpdateListItem(
     siteId: string,
     listId: string,
     itemId: string,
     fields: { [key: string]: string }
   ): Promise<IListItem> {
-    return (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`,
-      accessToken: this.accessToken,
-      method: "patch",
+    const patchUpdateListItem = getRequestHandler<IListItem>((params) =>
+      axios.patch(
+        this.baseApiUrl +
+          `v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`,
+        params
+      )
+    );
+
+    const params: AxiosRequestConfig = {
+      ...this.baseParams,
       headers: {
+        ...this.baseParams.headers,
         "Content-Type": "application/json",
       },
-      data: fields,
-    })) as IListItem;
-  }
+      data: { fields },
+    };
 
+    const res = await patchUpdateListItem(params);
+
+    if (!res.success)
+      throw Error("ERROR: patchUpdateListItem - " + res.error.message);
+
+    return res.data;
+  }
+  // TODO: Broken - Maybe caused by request data format update TBD
   async deleteListItem(
     siteId: string,
     listId: string,
     itemId: string
   ): Promise<void> {
-    return (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/lists/${listId}/items/${itemId}`,
-      accessToken: this.accessToken,
-      method: "delete",
-    })) as undefined; // RETURN HTTP/1.1 204 No Content
+    const deleteListItem = getRequestHandler<void>((params) =>
+      axios.delete(
+        this.baseApiUrl +
+          `v1.0/sites/${siteId}/lists/${listId}/items/${itemId}`,
+        params
+      )
+    );
+
+    const res = await deleteListItem(this.baseParams);
+
+    if (!res.success)
+      throw Error("ERROR: deleteListItem - " + res.error.message);
+
+    return res.data; // RETURN HTTP/1.1 204 No Content
   }
 
   async getDrives(siteId: string, driveName?: string): Promise<IDrives> {
-    let drives: IDrives = (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/drives/`,
-      accessToken: this.accessToken,
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })) as IDrives;
+    const getDrives = getRequestHandler<IDrives>((params) =>
+      axios.get(this.baseApiUrl + `v1.0/sites/${siteId}/drives/`, params)
+    );
+
+    const res = await getDrives(this.baseParams);
+
+    if (!res.success) throw Error("ERROR: getDrives - " + res.error.message);
+    let drives = res.data;
     if (driveName)
       drives = {
         ...drives,
@@ -116,14 +175,20 @@ class GraphApiQuery {
   }
 
   async getDriveItems(siteId: string, driveId: string): Promise<IDriveItems> {
-    return (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/drives/${driveId}/root/children`,
-      accessToken: this.accessToken,
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })) as IDriveItems;
+    const getDriveItems = getRequestHandler<IDriveItems>((params) =>
+      axios.get(
+        this.baseApiUrl +
+          `v1.0/sites/${siteId}/drives/${driveId}/root/children`,
+        params
+      )
+    );
+
+    const res = await getDriveItems(this.baseParams);
+
+    if (!res.success)
+      throw Error("ERROR: getDriveItems - " + res.error.message);
+
+    return res.data;
   }
 
   async getDriveItemByFileName(
@@ -132,16 +197,22 @@ class GraphApiQuery {
     itemName: string,
     loadContent?: boolean
   ): Promise<IDriveItem> {
-    return (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/drives/${driveId}/root:/${
-        loadContent ? `${itemName}:/content` : itemName
-      }`,
-      accessToken: this.accessToken,
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })) as IDriveItem;
+    const getDriveItemByFileName = getRequestHandler<IDriveItem>((params) =>
+      axios.get(
+        this.baseApiUrl +
+          `v1.0/sites/${siteId}/drives/${driveId}/root:/${
+            loadContent ? `${itemName}:/content` : itemName
+          }`,
+        params
+      )
+    );
+
+    const res = await getDriveItemByFileName(this.baseParams);
+
+    if (!res.success)
+      throw Error("ERROR: getDriveItemByFileName - " + res.error.message);
+
+    return res.data;
   }
 
   async getDriveItemById(
@@ -150,16 +221,22 @@ class GraphApiQuery {
     itemId: string,
     loadContent?: boolean
   ): Promise<IDriveItem> {
-    return (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/drives/${driveId}/items/${
-        loadContent ? `${itemId}/content` : itemId
-      }`,
-      accessToken: this.accessToken,
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })) as IDriveItem;
+    const getDriveItemById = getRequestHandler<IDriveItem>((params) =>
+      axios.get(
+        this.baseApiUrl +
+          `v1.0/sites/${siteId}/drives/${driveId}/items/${
+            loadContent ? `${itemId}/content` : itemId
+          }`,
+        params
+      )
+    );
+
+    const res = await getDriveItemById(this.baseParams);
+
+    if (!res.success)
+      throw Error("ERROR: getDriveItemById - " + res.error.message);
+
+    return res.data;
   }
 
   async putUploadDriveItem(
@@ -169,14 +246,23 @@ class GraphApiQuery {
     data: any,
     folder?: string
   ): Promise<IDriveItem> {
-    return (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/drives/${driveId}/root:/${
-        folder ? `${folder}` : ""
-      }${fileName}:/content`,
-      accessToken: this.accessToken,
-      method: "put",
-      data: data,
-    })) as IDriveItem;
+    const putUploadDriveItem = getRequestHandler<IDriveItem>((params) =>
+      axios.put(
+        this.baseApiUrl +
+          `v1.0/sites/${siteId}/drives/${driveId}/root:/${
+            folder ? `${folder}` : ""
+          }${fileName}:/content`,
+        data,
+        params
+      )
+    );
+
+    const res = await putUploadDriveItem(this.baseParams);
+
+    if (!res.success)
+      throw Error("ERROR: putUploadDriveItem - " + res.error.message);
+
+    return res.data;
   }
 
   async deleteDriveItem(
@@ -184,45 +270,20 @@ class GraphApiQuery {
     driveId: string,
     itemId: string
   ): Promise<IDriveItem> {
-    return (await this.callApi({
-      endpoint: `v1.0/sites/${siteId}/drives/${driveId}/items/${itemId}`,
-      accessToken: this.accessToken,
-      method: "delete",
-    })) as IDriveItem;
-  }
+    const deleteDriveItem = getRequestHandler<IDriveItem>((params) =>
+      axios.delete(
+        this.baseApiUrl +
+          `v1.0/sites/${siteId}/drives/${driveId}/items/${itemId}`,
+        params
+      )
+    );
 
-  private async callApi(
-    configs: CallConfig,
-    graphEndpoint?: string
-  ): Promise<unknown> {
-    graphEndpoint =
-      graphEndpoint ?? "https://graph.microsoft.com/" + configs.endpoint;
-    configs.method = configs.method ? configs.method : "get";
-    const options: AxiosRequestConfig = {
-      headers: {
-        ...configs.headers,
-        Authorization: `Bearer ${configs.accessToken}`,
-      },
-      params: configs.params,
-    };
+    const res = await deleteDriveItem(this.baseParams);
 
-    switch (configs.method) {
-      case "get":
-        return (await axios.get(graphEndpoint, options)).data;
-      case "post":
-        return (await axios.post(graphEndpoint, configs.data, options)).data;
-      case "patch":
-        return (await axios.patch(graphEndpoint, configs.data, options)).data;
-      case "put":
-        return (await axios.put(graphEndpoint, configs.data, options)).data;
-      case "delete":
-        // This applies to both the Azure AD Graph and the Microsoft Graph. The only way to delete objects is using user delegated auth with a token from a user that has sufficient permissions to do so (generally an admin).
-        return (await axios.delete(graphEndpoint, options)).data;
-      default:
-        throw Error(
-          `ERROR: callApi - does not support this method - ${configs.method}`
-        );
-    }
+    if (!res.success)
+      throw Error("ERROR: deleteDriveItem - " + res.error.message);
+
+    return res.data;
   }
 }
 
