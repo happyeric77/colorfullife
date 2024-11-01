@@ -13,7 +13,7 @@
     "publish:from-git": "npx lerna --no-private publish from-git",
     "publish:from-package": "npx lerna --no-private publish from-package",
     "serve-docs": "npx yarn docs && light-server -s ./docs -p 4000",
-    "docs": "npx yarn build-docs && rm -rf docs/* && cp -r packages/evm-web3-hook/docs/evm-web3-hook packages/ms365-graph-api-auth/docs/ms365-graph-api-auth docs",
+    "docs": "npx yarn build-docs && cp -r packages/evm-web3-hook/docs/evm-web3-hook packages/ms365-graph-api-auth/docs/ms365-graph-api-auth docs",
     "build-docs": "npx yarn build-docs:evm-web3-hook && npx yarn build-docs:ms365-graph-api-auth",
     "build-docs:evm-web3-hook": "npx typedoc --skipErrorChecking --options packages/evm-web3-hook/typedoc.json",
     "build-docs:ms365-graph-api-auth": "npx typedoc --skipErrorChecking --options packages/ms365-graph-api-auth/typedoc.json"
