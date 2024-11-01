@@ -11,9 +11,17 @@
     "version:minor": "npx lerna version minor",
     "version:patch": "npx lerna version patch",
     "publish:from-git": "npx lerna --no-private publish from-git",
-    "publish:from-package": "npx lerna --no-private publish from-package"
+    "publish:from-package": "npx lerna --no-private publish from-package",
+    "serve-docs": "npx yarn docs && light-server -s ./docs -p 4000",
+    "docs": "npx yarn build-docs && rm -rf docs/* && cp -r packages/evm-web3-hook/docs/evm-web3-hook packages/ms365-graph-api-auth/docs/ms365-graph-api-auth docs",
+    "build-docs": "npx yarn build-docs:evm-web3-hook && npx yarn build-docs:ms365-graph-api-auth",
+    "build-docs:evm-web3-hook": "npx typedoc --skipErrorChecking --options packages/evm-web3-hook/typedoc.json",
+    "build-docs:ms365-graph-api-auth": "npx typedoc --skipErrorChecking --options packages/ms365-graph-api-auth/typedoc.json"
   },
   "devDependencies": {
-    "lerna": "^6.5.1"
+    "light-server": "^2.9.1",
+    "typedoc": "^0.26.7",
+    "lerna": "^6.5.1",
+    "typescript": "^4.6.3"
   }
 }

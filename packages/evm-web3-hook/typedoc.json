@@ -1,0 +1,5 @@
+{
+  "entryPoints": ["./lib/index.tsx"],
+  "tsconfig": "./tsconfig.json",
+  "out": "docs/evm-web3-hook"
+}
